@@ -1,0 +1,76 @@
+<mujoco model="2_DOF_Arm">
+  <default>
+    <default class="robot">
+      <default class="motor">
+        <joint damping="0.01" />
+        <motor />
+      </default>
+      <default class="visual">
+        <geom material="visualgeom" contype="0" conaffinity="0" group="2" />
+      </default>
+      <default class="collision">
+        <geom material="collision_material" condim="3" contype="0" conaffinity="1" priority="1" group="1" solref="0.005 1" solimp="0.99 0.999 1e-05" friction="1 0.01 0.01" />
+      </default>
+    </default>
+  </default>
+
+  <compiler angle="radian" />
+
+  <asset>
+    <material name="default_material" rgba="0.7 0.7 0.7 1" />
+    <material name="visualgeom" rgba="0.5 0.6 0.7 1" />
+    <material name="collision_material" rgba="1.0 0.28 0.1 0.9" />
+    <texture type="skybox" builtin="gradient" rgb1="0.8 0.8 0.8" rgb2="0.2 0.2 0.2" width="512" height="512" />
+    <!-- scale=0.001: STL được xuất theo đơn vị mm, cần chuyển về m -->
+    <mesh name="base-v1.stl" file="meshes/base-v1.stl" scale="0.001 0.001 0.001" />
+    <mesh name="link_1-v1.stl" file="meshes/link_1-v1.stl" scale="0.001 0.001 0.001" />
+    <mesh name="link_2-v1.stl" file="meshes/link_2-v1.stl" scale="0.001 0.001 0.001" />
+  </asset>
+
+  <worldbody>
+    <!-- base-v1 cố định vào thế giới (KHÔNG có freejoint) -->
+    <body name="base-v1" pos="0.00000000 0.00000000 0.03405444" quat="1 0 0 0" childclass="robot">
+      <geom name="base-v1_collision" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" type="mesh" mesh="base-v1.stl" class="collision" />
+      <geom name="base-v1_visual" pos="0.0 0.0 0.0" quat="1.0 0.0 0.0 0.0" material="default_material" type="mesh" mesh="base-v1.stl" class="visual" />
+      <body name="link_1-v1" pos="0.0 -0.025 0.08" quat="0.7071067811865476 -0.7071067811865476 -0.0 0.0">
+        <joint name="base-v1_Revolute-1" type="hinge" ref="0.0" class="motor" range="0.0 3.141593" axis="0.0 0.0 1.0" />
+        <inertial pos="-0.05384668015559082 1.1523226817189426e-13 0.025" quat="1.0 0.0 0.0 0.0" mass="1.56676803613673" diaginertia="0.0005390260808662787 0.002019751721611335 0.0018561547247422164" />
+        <geom name="link_1-v1_collision" pos="0.0 -0.13667302144222404 2.6645352591003756e-17" quat="0.5000000000000001 0.5000000000000001 -0.5000000000000001 -0.5000000000000001" type="mesh" mesh="link_1-v1.stl" class="collision" />
+        <geom name="link_1-v1_visual" pos="0.0 -0.13667302144222404 2.6645352591003756e-17" quat="0.5000000000000001 0.5000000000000001 -0.5000000000000001 -0.5000000000000001" material="default_material" type="mesh" mesh="link_1-v1.stl" class="visual" />
+        <body name="link_2-v1" pos="-0.12 0.0 0.01" quat="1.0 0.0 0.0 0.0">
+          <joint name="link_1-v1_Revolute-2" type="hinge" ref="0.0" class="motor" range="-1.570796 1.570796" axis="0.0 0.0 1.0" />
+          <inertial pos="-0.07182895353767453 7.977618565746525e-14 0.015" quat="1.0 0.0 0.0 0.0" mass="0.9700376189400554" diaginertia="0.00014583185081259303 0.002187198981222771 0.0021875251891943573" />
+          <geom name="link_2-v1_collision" pos="5.329070518200751e-17 0.1140544408267181 -2.4424906541753444e-17" quat="0.5000000000000001 0.5000000000000001 -0.5000000000000001 -0.5000000000000001" type="mesh" mesh="link_2-v1.stl" class="collision" />
+          <geom name="link_2-v1_visual" pos="5.329070518200751e-17 0.1140544408267181 -2.4424906541753444e-17" quat="0.5000000000000001 0.5000000000000001 -0.5000000000000001 -0.5000000000000001" material="default_material" type="mesh" mesh="link_2-v1.stl" class="visual" />
+        </body>
+      </body>
+      <site name="base-v1_site" pos="0 0 0" quat="1 0 0 0" />
+      <camera name="front_camera" mode="track" fovy="90.0" quat="4.329637285359678e-17 4.329637285359677e-17 0.7071067811865475 0.7071067811865476" pos="0.0 2.0 0.5" />
+      <camera name="side_camera" mode="track" fovy="90.0" quat="-0.5 -0.4999999999999999 0.5 0.5000000000000001" pos="-2.0 0.0 0.5" />
+    </body>
+  </worldbody>
+
+  <actuator>
+    <motor name="base-v1_Revolute-1_ctrl" joint="base-v1_Revolute-1" class="motor" />
+    <motor name="link_1-v1_Revolute-2_ctrl" joint="link_1-v1_Revolute-2" class="motor" />
+  </actuator>
+
+  <contact>
+    <exclude body1="base-v1" body2="link_1-v1" />
+    <exclude body1="link_1-v1" body2="link_2-v1" />
+  </contact>
+
+  <sensor>
+    <framepos name="base-v1_site_pos" objtype="site" objname="base-v1_site" />
+    <framequat name="base-v1_site_quat" objtype="site" objname="base-v1_site" />
+    <framelinvel name="base-v1_site_linvel" objtype="site" objname="base-v1_site" />
+    <frameangvel name="base-v1_site_angvel" objtype="site" objname="base-v1_site" />
+    <velocimeter name="base-v1_site_vel" site="base-v1_site" />
+  </sensor>
+
+  <!-- Tư thế ban đầu: joint 1 = 0 rad, joint 2 = 0 rad (đều nằm trong range hợp lệ) -->
+  <keyframe>
+    <key name="home" qpos="0.0 0.0" />
+  </keyframe>
+
+</mujoco>

@@ -1,0 +1,21 @@
+# Environments
+mujoco_env/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Configs
+sim_config.json 
+
+# CAD Files
+CAD/
+
+# Media
+Media/
