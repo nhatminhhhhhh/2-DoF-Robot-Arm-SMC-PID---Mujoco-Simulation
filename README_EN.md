@@ -20,8 +20,8 @@ A 2-DOF (Degrees of Freedom) robotic arm control simulation utilizing **Sliding 
 ### 2. Clone the Repository
 Open your Terminal (or Powershell/Command Prompt) and run the following command:
 ```bash
-git clone https://github.com/your-username/SMC_Robot_Arm.git
-cd SMC_Robot_Arm
+git clone https://github.com/nhatminhhhhhh/2-DoF-Robot-Arm-SMC-PID---Mujoco-Simulation.git
+cd 2-DoF-Robot-Arm-SMC-PID---Mujoco-Simulation
 ```
 
 ### 3. Create a Virtual Environment

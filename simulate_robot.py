@@ -67,10 +67,20 @@ n_steps = int(duration / dt)
 
 # Mảng lưu dữ liệu để vẽ
 time_hist = np.linspace(0, duration, n_steps)
+# Vị trí góc (Position)
 q1_hist = np.zeros(n_steps)
 q2_hist = np.zeros(n_steps)
 q1_des_hist = np.zeros(n_steps)
 q2_des_hist = np.zeros(n_steps)
+# Vận tốc góc (Velocity)
+dq1_hist = np.zeros(n_steps)
+dq2_hist = np.zeros(n_steps)
+dq1_des_hist = np.zeros(n_steps)
+dq2_des_hist = np.zeros(n_steps)
+# Gia tốc góc (Acceleration)
+ddq1_des_hist = np.zeros(n_steps)
+ddq2_des_hist = np.zeros(n_steps)
+# Momen điều khiển
 tau1 = np.zeros(n_steps)
 tau2 = np.zeros(n_steps)
 
@@ -149,6 +159,12 @@ with mujoco.viewer.launch_passive(model, data) as viewer:
         q2_hist[i] = q[1]
         q1_des_hist[i] = q_d[0]
         q2_des_hist[i] = q_d[1]
+        dq1_hist[i] = dq[0]
+        dq2_hist[i] = dq[1]
+        dq1_des_hist[i] = dq_d[0]
+        dq2_des_hist[i] = dq_d[1]
+        ddq1_des_hist[i] = ddq_d[0]
+        ddq2_des_hist[i] = ddq_d[1]
         tau1[i] = tau[0]
         tau2[i] = tau[1]
 
@@ -199,7 +215,55 @@ plt.ylabel('Sai số khớp 2 (rad)', fontsize=12)
 plt.tight_layout()
 plt.show()
 
-# Biểu đồ momen điều khiển 
+# --- Biểu đồ vận tốc góc (Angular Velocity) ---
+plt.figure(figsize=(14, 8))
+plt.subplot(2, 1, 1)
+plt.plot(time_hist, dq1_hist,     label='dq1 thực tế',    linewidth=2)
+plt.plot(time_hist, dq1_des_hist, '--', label='dq1 tham chiếu', linewidth=2)
+plt.legend(fontsize=12)
+plt.grid()
+plt.ylabel('Vận tốc góc khớp 1 (rad/s)', fontsize=12)
+plt.title('Vận tốc góc (Angular Velocity – Reference vs Actual)', fontsize=14)
+
+plt.subplot(2, 1, 2)
+plt.plot(time_hist, dq2_hist,     label='dq2 thực tế',    linewidth=2)
+plt.plot(time_hist, dq2_des_hist, '--', label='dq2 tham chiếu', linewidth=2)
+plt.legend(fontsize=12)
+plt.grid()
+plt.xlabel('Thời gian (s)', fontsize=12)
+plt.ylabel('Vận tốc góc khớp 2 (rad/s)', fontsize=12)
+plt.tight_layout()
+plt.show()
+
+# --- Biểu đồ gia tốc góc – chỉ tham chiếu (từ trajectory) ---
+# Gia tốc thực tế tính bằng đạo hàm số từ vận tốc đo được
+ddq1_act = np.gradient(dq1_hist, time_hist)
+ddq2_act = np.gradient(dq2_hist, time_hist)
+
+plt.figure(figsize=(14, 8))
+plt.subplot(2, 1, 1)
+plt.plot(time_hist, ddq1_act,     label='ddq1 thực tế (d/dt dq)',  linewidth=2)
+plt.plot(time_hist, ddq1_des_hist, '--', label='ddq1 tham chiếu (trajectory)', linewidth=2)
+plt.legend(fontsize=12)
+plt.grid()
+plt.ylabel('Gia tốc góc khớp 1 (rad/s²)', fontsize=12)
+plt.title('Gia tốc góc (Angular Acceleration – Reference vs Actual)', fontsize=14)
+margin1 = max(np.max(np.abs(ddq1_des_hist)) * 0.2, 0.1)
+plt.ylim(np.min(ddq1_des_hist) - margin1, np.max(ddq1_des_hist) + margin1)
+
+plt.subplot(2, 1, 2)
+plt.plot(time_hist, ddq2_act,     label='ddq2 thực tế (d/dt dq)',  linewidth=2)
+plt.plot(time_hist, ddq2_des_hist, '--', label='ddq2 tham chiếu (trajectory)', linewidth=2)
+plt.legend(fontsize=12)
+plt.grid()
+plt.xlabel('Thời gian (s)', fontsize=12)
+plt.ylabel('Gia tốc góc khớp 2 (rad/s²)', fontsize=12)
+margin2 = max(np.max(np.abs(ddq2_des_hist)) * 0.2, 0.1)
+plt.ylim(np.min(ddq2_des_hist) - margin2, np.max(ddq2_des_hist) + margin2)
+plt.tight_layout()
+plt.show()
+
+# --- Biểu đồ momen điều khiển ---
 plt.figure(figsize=(14, 8))
 plt.subplot(2, 1, 1)
 plt.plot(time_hist, tau1, label='tau1', linewidth=2)

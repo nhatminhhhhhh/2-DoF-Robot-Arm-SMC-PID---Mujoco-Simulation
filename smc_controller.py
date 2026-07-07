@@ -6,7 +6,7 @@ class SMCController:
         # Tham số điều khiển (cần tinh chỉnh)
         self.Lambda = np.diag([10, 15])    # Độ rộng mặt trượt
         self.K = np.diag([0.1, 0.1])         # Độ lợi tỷ lệ 
-        self.eta = np.diag([50.0, 100.0])       # Độ lợi chống nhiễu 
+        self.eta = np.diag([50.0, 120.0])       # Độ lợi chống nhiễu 
         self.phi = 0.1                      # Bề dày lớp biên (giảm chattering)
 
         # Tham số động lực học robot (khớp với model CAD/ .mjcf)

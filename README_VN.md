@@ -21,7 +21,7 @@ Mô phỏng hệ thống điều khiển cánh tay robot 2 bậc tự do (2-DOF)
 Mở Terminal (hoặc Powershell/Command Prompt) và chạy lệnh sau:
 ```bash
 git clone https://github.com/nhatminhhhhhh/2-DoF-Robot-Arm-SMC-PID---Mujoco-Simulation.git
-cd SMC_Robot_Arm
+cd 2-DoF-Robot-Arm-SMC-PID---Mujoco-Simulation
 ```
 
 ### 3. Tạo môi trường ảo (Virtual Environment)
