@@ -23,7 +23,7 @@ else:
         "pulse_start": 3.0, "pulse_end": 3.2, "pulse_amp_1": 0.2, "pulse_amp_2": 0.5,
         "smc_lambda_1": 10.0, "smc_lambda_2": 15.0,
         "smc_k_1": 0.1, "smc_k_2": 0.1,
-        "smc_eta_1": 50.0, "smc_eta_2": 100.0,
+        "smc_eta_1": 50.0, "smc_eta_2": 120.0,
         "smc_phi": 0.1, "smc_use_sat": True,
         "pid_kp_1": 19.0, "pid_kp_2": 19.0,
         "pid_ki_1": 7.0, "pid_ki_2": 3.0,
@@ -179,18 +179,35 @@ with mujoco.viewer.launch_passive(model, data) as viewer:
 import matplotlib.pyplot as plt
 
 plt.figure(figsize=(14, 8))
+
+label_q1_act = 'q1 thực tế'
+label_q2_act = 'q2 thực tế'
+
+dist_str = "Noise: Active" if ADD_DISTURBANCE else "Noise: None"
+
+if MODE == 2:
+    sat_str = "sat" if CFG['smc_use_sat'] else "sign"
+    label_q1_act += f" (SMC: Lambda={CFG['smc_lambda_1']}, K={CFG['smc_k_1']}, Eta={CFG['smc_eta_1']}, Phi={CFG['smc_phi']}, func={sat_str} | {dist_str})"
+    label_q2_act += f" (SMC: Lambda={CFG['smc_lambda_2']}, K={CFG['smc_k_2']}, Eta={CFG['smc_eta_2']}, Phi={CFG['smc_phi']}, func={sat_str} | {dist_str})"
+else:
+    label_q1_act += f" ({dist_str})"
+    label_q2_act += f" ({dist_str})"
+
+label_q1_ref = f"q1 tham chiếu (Target: {CFG['q_target_1']} rad)"
+label_q2_ref = f"q2 tham chiếu (Target: {CFG['q_target_2']} rad)"
+
 plt.subplot(2, 1, 1)
-plt.plot(time_hist, q1_hist, label='q1 thực tế', linewidth=2)
-plt.plot(time_hist, q1_des_hist, '--', label='q1 tham chiếu', linewidth=2)
-plt.legend(fontsize=12)
+plt.plot(time_hist, q1_hist, label=label_q1_act, linewidth=2)
+plt.plot(time_hist, q1_des_hist, '--', label=label_q1_ref, linewidth=2)
+plt.legend(fontsize=10)
 plt.grid()
 plt.ylabel('Góc khớp 1 (rad)', fontsize=12)
 plt.title('Quỹ đạo góc khớp (Reference vs Actual)', fontsize=14)
 
 plt.subplot(2, 1, 2)
-plt.plot(time_hist, q2_hist, label='q2 thực tế', linewidth=2)
-plt.plot(time_hist, q2_des_hist, '--', label='q2 tham chiếu', linewidth=2)
-plt.legend(fontsize=12)
+plt.plot(time_hist, q2_hist, label=label_q2_act, linewidth=2)
+plt.plot(time_hist, q2_des_hist, '--', label=label_q2_ref, linewidth=2)
+plt.legend(fontsize=10)
 plt.grid()
 plt.xlabel('Thời gian (s)', fontsize=12)
 plt.ylabel('Góc khớp 2 (rad)', fontsize=12)

@@ -116,7 +116,7 @@ class SimConfigGUI:
     # UI BUILD
     # ──────────────────────────────────────────────
     def _build_ui(self):
-        # ---- Title bar ----
+        # ---- Nhat Minh dep trai 123 ----
         title_bar = tk.Frame(self.root, bg=BG_PANEL, height=50)
         title_bar.pack(fill="x")
         tk.Label(title_bar, text="🛸 ORBITAL COMMAND :: SMC ROBOT ARM CONFIG",
